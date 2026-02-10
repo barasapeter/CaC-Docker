@@ -20,9 +20,6 @@ DB_CONFIG = {
 }
 
 
-print(DB_CONFIG)
-
-
 def create_database_if_not_exists():
     conn = psycopg2.connect(
         dbname="postgres",

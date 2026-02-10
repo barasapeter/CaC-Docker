@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 # set working directory
 WORKDIR /app
 
-# install system dependencies for psycopg2 and Gunicorn
+# install minimal system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     gcc \
@@ -18,7 +18,7 @@ RUN apt-get update \
 # copy dependency definitions first (for caching)
 COPY requirements.txt .
 
-# install dependencies
+# install dependencies (use psycopg2-binary in requirements.txt)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy app code
@@ -28,6 +28,4 @@ COPY . .
 EXPOSE 5000
 
 # run app with gunicorn
-# --bind 0.0.0.0:5000 make it accessible outside the container
-# --workers 3
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "main:app"]
