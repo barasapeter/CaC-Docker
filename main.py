@@ -132,14 +132,18 @@ def entry():
     except Exception as e:
         if conn:
             conn.rollback()
-        return jsonify({"error": "database_error", "details": str(e)}), 500
+        return jsonify({"error": "database error", "details": str(e)}), 500
 
     finally:
         if conn:
             conn.close()
 
 
-if __name__ == "__main__":
+app = Flask(__name__)
+
+with app.app_context():
     create_database_if_not_exists()
     create_tables_if_not_exists()
+
+if __name__ == "__main__":
     app.run(debug=False)
