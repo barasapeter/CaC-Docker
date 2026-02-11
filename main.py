@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
+import platform
 
 import psycopg2
 import psycopg2.extensions
@@ -15,8 +16,12 @@ DB_CONFIG = {
     "dbname": DB_NAME,
     "user": os.getenv("POSTGRES_USER", "postgres"),
     "password": os.getenv("POSTGRES_PASSWORD", "[password redacted]"),
-    "host": os.getenv("POSTGRES_HOST", "localhost"),
-    "port": os.getenv("POSTGRES_PORT", 5432),
+    "host": (
+        os.getenv("POSTGRES_HOST", "localhost")
+        if platform.system() == "Linux"
+        else "localhost"
+    ),
+    "port": os.getenv("POSTGRES_PORT", 5432) if platform.system() == "Linux" else 5432,
 }
 
 
@@ -138,8 +143,6 @@ def entry():
         if conn:
             conn.close()
 
-
-app = Flask(__name__)
 
 with app.app_context():
     create_database_if_not_exists()
