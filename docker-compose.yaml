@@ -1,20 +1,20 @@
 services:
   db:
     image: postgres:latest
-    container_name: database_psql
+    container_name: postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: docker_learn
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432"
     volumes:
-      - db_data:/var/lib/postgresql
+      - psql-volume:/var/lib/postgresql
 
-  web:
+  fastapi:
     build: .
-    container_name: server_backend
+    container_name: fastapi
     restart: unless-stopped
     env_file:
       - .env
@@ -26,4 +26,4 @@ services:
       gunicorn --bind 0.0.0.0:5000 --workers 3 main:app
 
 volumes:
-  db_data:
+  psql-volume:
